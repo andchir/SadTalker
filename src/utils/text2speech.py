@@ -1,12 +1,17 @@
 import os
 import tempfile
-from TTS.api import TTS
+import importlib
 
+try:
+    from TTS.api import TTS
+except ImportError:
+    print('TTS module not found.')
 
 class TTSTalker():
     def __init__(self) -> None:
-        model_name = TTS().list_models()[0]
-        self.tts = TTS(model_name)
+        if importlib.find_loader('TTS'):
+            model_name = TTS().list_models()[0]
+            self.tts = TTS(model_name)
 
     def test(self, text, language='en'):
 
