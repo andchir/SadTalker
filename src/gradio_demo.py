@@ -1,5 +1,6 @@
 import torch, uuid
 import os, sys, shutil
+from PIL import Image
 from src.utils.preprocess import CropAndExtract
 from src.test_audio2coeff import Audio2Coeff  
 from src.facerender.animate import AnimateFromCoeff
@@ -57,9 +58,16 @@ class SadTalker():
         input_dir = os.path.join(save_dir, 'input')
         os.makedirs(input_dir, exist_ok=True)
 
-        print(source_image)
-        pic_path = os.path.join(input_dir, os.path.basename(source_image)) 
+        print(input_dir)
+        pic_path = os.path.join(input_dir, os.path.basename(source_image))
         shutil.move(source_image, input_dir)
+
+        if '.webp' in pic_path:
+            im = Image.open(pic_path).convert('RGB')
+            im.save(pic_path.replace('.webp', '.jpeg'), 'jpeg')
+            pic_path = pic_path.replace('.webp', '.jpeg')
+
+        print('pic_path: ', pic_path)
 
         if driven_audio is not None and os.path.isfile(driven_audio):
             audio_path = os.path.join(input_dir, os.path.basename(driven_audio))  
